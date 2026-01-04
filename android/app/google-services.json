@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "709275603996",
+    "project_id": "batohi-dc5dd",
+    "storage_bucket": "batohi-dc5dd.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:709275603996:android:3e44cee620e4f39a51fbd9",
+        "android_client_info": {
+          "package_name": "com.techhive.batohi"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "709275603996-qsle96ruaems16h8luolbas67r5k087k.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.techhive.batohi",
+            "certificate_hash": "ab1b5aea8425f46ae4ed40881145eca5df9698ae"
+          }
+        },
+        {
+          "client_id": "709275603996-f5fpkqtk0fmd6uechpq5q50m0hvt9mr1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC_OWepGV7Y4KQ7TI378x41r9pt4HG6K4o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "709275603996-f5fpkqtk0fmd6uechpq5q50m0hvt9mr1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
