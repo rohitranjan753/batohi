@@ -4,34 +4,35 @@ import 'package:go_router/go_router.dart';
 import '../blocs/authentication/authentication_bloc.dart';
 import '../blocs/authentication/authentication_state.dart';
 import '../pages/login_page.dart';
-import '../pages/home_page.dart';
+import '../pages/main_navigation_page.dart';
 import '../pages/splash_page.dart';
 import '../pages/profile_page.dart';
+import 'app_routes.dart';
 
 class AppRouter {
   static GoRouter router(AuthenticationBloc authenticationBloc) {
     return GoRouter(
-      initialLocation: '/splash',
+      initialLocation: AppRoutes.splash,
       refreshListenable: GoRouterRefreshStream(authenticationBloc.stream),
       redirect: (context, state) {
         final authState = authenticationBloc.state;
-        final isOnSplash = state.matchedLocation == '/splash';
-        final isOnLogin = state.matchedLocation == '/login';
+        final isOnSplash = state.matchedLocation == AppRoutes.splash;
+        final isOnLogin = state.matchedLocation == AppRoutes.login;
 
         // Handle authentication states
         switch (authState.status) {
           case AuthenticationStatus.unknown:
             // Show splash while determining auth status
-            return isOnSplash ? null : '/splash';
+            return isOnSplash ? null : AppRoutes.splash;
           
           case AuthenticationStatus.unauthenticated:
             // Redirect to login if not authenticated
-            return isOnLogin ? null : '/login';
+            return isOnLogin ? null : AppRoutes.login;
           
           case AuthenticationStatus.authenticated:
             // Redirect to home if authenticated and on login/splash
             if (isOnLogin || isOnSplash) {
-              return '/home';
+              return AppRoutes.home;
             }
             // Allow access to authenticated routes
             return null;
@@ -39,23 +40,23 @@ class AppRouter {
       },
       routes: [
         GoRoute(
-          path: '/splash',
-          name: 'splash',
+          path: AppRoutes.splash,
+          name: AppRoutes.splashName,
           builder: (context, state) => const SplashPage(),
         ),
         GoRoute(
-          path: '/login',
-          name: 'login',
+          path: AppRoutes.login,
+          name: AppRoutes.loginName,
           builder: (context, state) => const LoginPage(),
         ),
         GoRoute(
-          path: '/home',
-          name: 'home',
-          builder: (context, state) => const HomePage(),
+          path: AppRoutes.home,
+          name: AppRoutes.homeName,
+          builder: (context, state) => const MainNavigationPage(),
         ),
         GoRoute(
-          path: '/profile',
-          name: 'profile',
+          path: AppRoutes.profile,
+          name: AppRoutes.profileName,
           builder: (context, state) => const ProfilePage(),
         ),
       ],

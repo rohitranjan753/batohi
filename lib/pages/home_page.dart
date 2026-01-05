@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import '../blocs/authentication/authentication_bloc.dart';
 import '../blocs/authentication/authentication_event.dart';
+import '../config/app_routes.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -42,7 +43,7 @@ class HomePage extends StatelessWidget {
             ElevatedButton(
               onPressed: () {
                 // Example of programmatic navigation with GoRouter
-                context.go('/profile');
+                context.go(AppRoutes.profile);
               },
               child: const Text('Go to Profile (Demo)'),
             ),
