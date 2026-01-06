@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'blocs/authentication/authentication_bloc.dart';
 import 'blocs/mytrips/mytrips_bloc.dart';
+import 'blocs/expense/expense_bloc.dart';
 import 'repositories/authentication_repository.dart';
 import 'config/app_router.dart';
 
@@ -32,6 +33,7 @@ class MyApp extends StatelessWidget {
             ),
           ),
           BlocProvider(create: (_) => MyTripsBloc()),
+          BlocProvider(create: (_) => ExpenseBloc()),
         ],
         child: const AppView(),
       ),

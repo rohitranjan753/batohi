@@ -6,6 +6,10 @@ import '../blocs/authentication/authentication_event.dart';
 import '../blocs/mytrips/mytrips_bloc.dart';
 import '../blocs/mytrips/mytrips_event.dart';
 import '../blocs/mytrips/mytrips_state.dart';
+import '../blocs/expense/expense_bloc.dart';
+import '../blocs/expense/expense_event.dart';
+import '../blocs/expense/expense_state.dart';
+import '../pages/expenses_page.dart';
 
 class MyTripsPage extends StatelessWidget {
   const MyTripsPage({super.key});
@@ -20,6 +24,12 @@ class MyTripsPage extends StatelessWidget {
         child: const AddTripBottomSheet(),
       ),
     );
+  }
+
+  void _navigateToExpenses(BuildContext context, String tripId) {
+    Navigator.of(
+      context,
+    ).push(MaterialPageRoute(builder: (context) => const ExpensesPage()));
   }
 
   @override
@@ -50,8 +60,7 @@ class MyTripsPage extends StatelessWidget {
           return Column(
             children: [
               // Trips Content
-              Expanded(child: _buildTripsContent(context, state),
-              ),
+              Expanded(child: _buildTripsContent(context, state)),
             ],
           );
         },
@@ -165,46 +174,232 @@ class MyTripsPage extends StatelessWidget {
             itemCount: state.trips.length,
             itemBuilder: (context, index) {
               final trip = state.trips[index];
-              return Card(
-                margin: const EdgeInsets.only(bottom: 12),
-                child: ListTile(
-                  leading: CircleAvatar(
-                    backgroundColor: Theme.of(context).primaryColor,
-                    child: Icon(
-                      PhosphorIcons.airplane(),
-                      color: Colors.white,
-                      size: 20,
-                    ),
-                  ),
-                  title: Text(
-                    trip.tripName,
-                    style: const TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  subtitle: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(trip.destination),
-                      const SizedBox(height: 4),
-                      Text(
-                        '${trip.startDate.day}/${trip.startDate.month}/${trip.startDate.year} - ${trip.endDate.day}/${trip.endDate.month}/${trip.endDate.year}',
-                        style: TextStyle(fontSize: 12, color: Colors.grey[600],
-                        ),
-                      ),
-                    ],
-                  ),
-                  trailing: Text(
-                    '${trip.currency} ${trip.budget.toStringAsFixed(0)}',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Theme.of(context).primaryColor,
-                    ),
-                  ),
-                ),
+              return TripCard(
+                trip: trip,
+                onTap: () => _navigateToExpenses(context, trip.id),
               );
             },
           ),
         ),
       ],
+    );
+  }
+}
+
+class TripCard extends StatefulWidget {
+  final dynamic trip;
+  final VoidCallback onTap;
+
+  const TripCard({super.key, required this.trip, required this.onTap});
+
+  @override
+  State<TripCard> createState() => _TripCardState();
+}
+
+class _TripCardState extends State<TripCard> {
+  @override
+  void initState() {
+    super.initState();
+    // Load expenses for this trip when the card is created
+    context.read<ExpenseBloc>().add(LoadExpenses(widget.trip.id));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      margin: const EdgeInsets.only(bottom: 12),
+      child: InkWell(
+        onTap: widget.onTap,
+        borderRadius: BorderRadius.circular(12),
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  CircleAvatar(
+                    backgroundColor: widget.trip.isStarted
+                        ? Colors.green
+                        : Theme.of(context).primaryColor,
+                    child: Icon(
+                      widget.trip.isStarted
+                          ? PhosphorIcons.play()
+                          : PhosphorIcons.airplane(),
+                      color: Colors.white,
+                      size: 20,
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          widget.trip.tripName,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
+                        ),
+                        Text(
+                          widget.trip.destination,
+                          style: TextStyle(
+                            color: Colors.grey[600],
+                            fontSize: 14,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  if (widget.trip.isStarted)
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 4,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.green.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Text(
+                        'Active',
+                        style: TextStyle(
+                          color: Colors.green,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+              const SizedBox(height: 12),
+              Row(
+                children: [
+                  Icon(
+                    PhosphorIcons.calendar(),
+                    size: 16,
+                    color: Colors.grey[600],
+                  ),
+                  const SizedBox(width: 4),
+                  Text(
+                    '${widget.trip.startDate.day}/${widget.trip.startDate.month}/${widget.trip.startDate.year} - ${widget.trip.endDate.day}/${widget.trip.endDate.month}/${widget.trip.endDate.year}',
+                    style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Budget',
+                        style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+                      ),
+                      Text(
+                        '${widget.trip.currency} ${widget.trip.budget.toStringAsFixed(0)}',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Theme.of(context).primaryColor,
+                          fontSize: 14,
+                        ),
+                      ),
+                    ],
+                  ),
+                  BlocBuilder<ExpenseBloc, ExpenseState>(
+                    builder: (context, expenseState) {
+                      // Filter expenses for this specific trip
+                      final tripExpenses = expenseState.expenses
+                          .where((expense) => expense.tripId == widget.trip.id)
+                          .toList();
+
+                      final totalSpent = tripExpenses.fold(
+                        0.0,
+                        (sum, expense) => sum + expense.amount,
+                      );
+
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Text(
+                            'Spent',
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: Colors.grey[600],
+                            ),
+                          ),
+                          Text(
+                            '\$${totalSpent.toStringAsFixed(2)}',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: totalSpent > widget.trip.budget
+                                  ? Colors.red
+                                  : Colors.green,
+                              fontSize: 14,
+                            ),
+                          ),
+                        ],
+                      );
+                    },
+                  ),
+                ],
+              ),
+              const SizedBox(height: 12),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  BlocBuilder<ExpenseBloc, ExpenseState>(
+                    builder: (context, expenseState) {
+                      final tripExpenses = expenseState.expenses
+                          .where((expense) => expense.tripId == widget.trip.id)
+                          .toList();
+
+                      return Row(
+                        children: [
+                          Icon(
+                            PhosphorIcons.receipt(),
+                            size: 16,
+                            color: Colors.grey[600],
+                          ),
+                          const SizedBox(width: 4),
+                          Text(
+                            '${tripExpenses.length} expense${tripExpenses.length != 1 ? 's' : ''}',
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: Colors.grey[600],
+                            ),
+                          ),
+                        ],
+                      );
+                    },
+                  ),
+                  Row(
+                    children: [
+                      Text(
+                        'View expenses',
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Theme.of(context).primaryColor,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      const SizedBox(width: 4),
+                      Icon(
+                        PhosphorIcons.arrowRight(),
+                        size: 16,
+                        color: Theme.of(context).primaryColor,
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
