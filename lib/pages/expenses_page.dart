@@ -124,33 +124,48 @@ class _ExpensesPageState extends State<ExpensesPage>
   Widget _buildMainTotalHeader(ExpenseState state) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(24),
+      padding: const EdgeInsets.all(28),
       margin: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            Theme.of(context).primaryColor,
-            Theme.of(context).primaryColor.withOpacity(0.8),
+            const Color(0xFF6366F1),
+            const Color(0xFF8B5CF6),
+            const Color(0xFFA855F7),
           ],
         ),
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
-            color: Theme.of(context).primaryColor.withOpacity(0.3),
-            blurRadius: 10,
-            offset: const Offset(0, 5),
+            color: const Color(0xFF6366F1).withOpacity(0.4),
+            blurRadius: 20,
+            offset: const Offset(0, 10),
           ),
         ],
       ),
       child: Column(
         children: [
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: Colors.white.withOpacity(0.2),
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: Icon(
+              PhosphorIcons.currencyCircleDollar(),
+              color: Colors.white,
+              size: 28,
+            ),
+          ),
+          const SizedBox(height: 16),
           Text(
             'Total Expenses',
-            style: Theme.of(context).textTheme.titleLarge?.copyWith(
-              color: Colors.white,
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+              color: Colors.white.withOpacity(0.9),
               fontWeight: FontWeight.w500,
+              letterSpacing: 0.5,
             ),
           ),
           const SizedBox(height: 8),
@@ -159,14 +174,23 @@ class _ExpensesPageState extends State<ExpensesPage>
             style: Theme.of(context).textTheme.headlineLarge?.copyWith(
               color: Colors.white,
               fontWeight: FontWeight.bold,
-              fontSize: 36,
+              fontSize: 42,
+              letterSpacing: -1,
             ),
           ),
-          const SizedBox(height: 4),
-          Text(
-            'Across ${state.expenses.length} expense${state.expenses.length != 1 ? 's' : ''}',
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: Colors.white.withOpacity(0.9),
+          const SizedBox(height: 8),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+            decoration: BoxDecoration(
+              color: Colors.white.withOpacity(0.2),
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: Text(
+              '${state.expenses.length} expense${state.expenses.length != 1 ? 's' : ''} tracked',
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                color: Colors.white,
+                fontWeight: FontWeight.w500,
+              ),
             ),
           ),
         ],
@@ -245,55 +269,78 @@ class _ExpensesPageState extends State<ExpensesPage>
     final percentage = totalExpenses > 0 ? (amount / totalExpenses * 100) : 0.0;
     final hasExpenses = amount > 0;
 
-    return Card(
-      elevation: hasExpenses ? 2 : 1,
-      child: Container(
-        padding: const EdgeInsets.all(12), // Reduced padding from 16 to 12
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12),
-          border: hasExpenses
-              ? Border.all(color: categoryIcon.color.withOpacity(0.3), width: 1)
-              : null,
+    return Container(
+      decoration: BoxDecoration(
+        gradient: hasExpenses
+            ? LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [Colors.white, categoryIcon.color.withOpacity(0.05)],
+              )
+            : null,
+        color: hasExpenses ? null : Colors.grey[50],
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: hasExpenses
+              ? categoryIcon.color.withOpacity(0.2)
+              : Colors.grey.withOpacity(0.1),
+          width: 1.5,
         ),
+        boxShadow: hasExpenses
+            ? [
+                BoxShadow(
+                  color: categoryIcon.color.withOpacity(0.15),
+                  blurRadius: 12,
+                  offset: const Offset(0, 4),
+                ),
+              ]
+            : null,
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(14),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min, // Added to prevent overflow
+          mainAxisSize: MainAxisSize.min,
           children: [
             Row(
               children: [
                 Container(
-                  padding: const EdgeInsets.all(
-                    6,
-                  ), // Reduced padding from 8 to 6
+                  padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                    color: categoryIcon.color.withOpacity(
-                      hasExpenses ? 0.1 : 0.05,
-                    ),
-                    borderRadius: BorderRadius.circular(
-                      6,
-                    ), // Reduced border radius
+                    gradient: hasExpenses
+                        ? LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: [
+                              categoryIcon.color.withOpacity(0.2),
+                              categoryIcon.color.withOpacity(0.1),
+                            ],
+                          )
+                        : null,
+                    color: hasExpenses ? null : Colors.grey.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(10),
                   ),
                   child: Icon(
                     categoryIcon.icon,
                     color: hasExpenses ? categoryIcon.color : Colors.grey,
-                    size: 18, // Reduced icon size from 20 to 18
+                    size: 18,
                   ),
                 ),
                 const Spacer(),
                 if (hasExpenses)
                   Container(
                     padding: const EdgeInsets.symmetric(
-                      horizontal: 4, // Reduced horizontal padding
-                      vertical: 1, // Reduced vertical padding
+                      horizontal: 8,
+                      vertical: 4,
                     ),
                     decoration: BoxDecoration(
-                      color: categoryIcon.color.withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(8),
+                      color: categoryIcon.color.withOpacity(0.15),
+                      borderRadius: BorderRadius.circular(12),
                     ),
                     child: Text(
                       '${percentage.toStringAsFixed(0)}%',
                       style: TextStyle(
-                        fontSize: 9, // Reduced font size from 10 to 9
+                        fontSize: 10,
                         fontWeight: FontWeight.bold,
                         color: categoryIcon.color,
                       ),
@@ -301,36 +348,38 @@ class _ExpensesPageState extends State<ExpensesPage>
                   ),
               ],
             ),
-            const SizedBox(height: 8), // Reduced spacing from 12 to 8
+            const SizedBox(height: 10),
             Flexible(
-              // Wrapped with Flexible to prevent overflow
               child: Text(
                 category,
                 style: TextStyle(
-                  fontWeight: FontWeight.w500,
-                  fontSize: 11, // Reduced font size from 12 to 11
+                  fontWeight: FontWeight.w600,
+                  fontSize: 12,
                   color: hasExpenses ? Colors.black87 : Colors.grey,
                 ),
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
               ),
             ),
-            const SizedBox(height: 2), // Reduced spacing from 4 to 2
+            const SizedBox(height: 4),
             Text(
               hasExpenses ? '\$${amount.toStringAsFixed(2)}' : '\$0.00',
               style: TextStyle(
                 fontWeight: FontWeight.bold,
-                fontSize: 14, // Reduced font size from 16 to 14
+                fontSize: 16,
                 color: hasExpenses ? categoryIcon.color : Colors.grey,
               ),
             ),
             if (hasExpenses) ...[
-              const SizedBox(height: 6), // Reduced spacing from 8 to 6
-              LinearProgressIndicator(
-                value: percentage / 100,
-                backgroundColor: Colors.grey[200],
-                valueColor: AlwaysStoppedAnimation<Color>(categoryIcon.color),
-                minHeight: 2,
+              const SizedBox(height: 8),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(4),
+                child: LinearProgressIndicator(
+                  value: percentage / 100,
+                  backgroundColor: Colors.grey[200],
+                  valueColor: AlwaysStoppedAnimation<Color>(categoryIcon.color),
+                  minHeight: 4,
+                ),
               ),
             ],
           ],
@@ -439,38 +488,60 @@ class _ExpensesPageState extends State<ExpensesPage>
     );
 
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Row(
         children: [
           Expanded(
-            child: Card(
+            child: Container(
+              decoration: BoxDecoration(
+                gradient: const LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [Color(0xFF00C853), Color(0xFF00E676)],
+                ),
+                borderRadius: BorderRadius.circular(20),
+                boxShadow: [
+                  BoxShadow(
+                    color: const Color(0xFF00C853).withOpacity(0.3),
+                    blurRadius: 12,
+                    offset: const Offset(0, 6),
+                  ),
+                ],
+              ),
               child: Padding(
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.all(20),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Row(
-                      children: [
-                        Icon(
-                          PhosphorIcons.wallet(),
-                          color: Colors.green,
-                          size: 24,
-                        ),
-                        const SizedBox(width: 8),
-                        Text(
-                          'Total Spent',
-                          style: Theme.of(context).textTheme.bodyMedium
-                              ?.copyWith(color: Colors.grey[600]),
-                        ),
-                      ],
+                    Container(
+                      padding: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.2),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Icon(
+                        PhosphorIcons.wallet(),
+                        color: Colors.white,
+                        size: 22,
+                      ),
                     ),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: 16),
+                    Text(
+                      'Total Spent',
+                      style: TextStyle(
+                        color: Colors.white.withOpacity(0.9),
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
                     Text(
                       '\$${state.totalExpenses.toStringAsFixed(2)}',
-                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                      style: const TextStyle(
                         fontWeight: FontWeight.bold,
-                        color: Colors.green,
+                        color: Colors.white,
+                        fontSize: 24,
                       ),
                     ),
                   ],
@@ -480,33 +551,55 @@ class _ExpensesPageState extends State<ExpensesPage>
           ),
           const SizedBox(width: 16),
           Expanded(
-            child: Card(
+            child: Container(
+              decoration: BoxDecoration(
+                gradient: const LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [Color(0xFF2196F3), Color(0xFF64B5F6)],
+                ),
+                borderRadius: BorderRadius.circular(20),
+                boxShadow: [
+                  BoxShadow(
+                    color: const Color(0xFF2196F3).withOpacity(0.3),
+                    blurRadius: 12,
+                    offset: const Offset(0, 6),
+                  ),
+                ],
+              ),
               child: Padding(
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.all(20),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Row(
-                      children: [
-                        Icon(
-                          PhosphorIcons.calendar(),
-                          color: Colors.blue,
-                          size: 24,
-                        ),
-                        const SizedBox(width: 8),
-                        Text(
-                          'This Month',
-                          style: Theme.of(context).textTheme.bodyMedium
-                              ?.copyWith(color: Colors.grey[600]),
-                        ),
-                      ],
+                    Container(
+                      padding: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.2),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Icon(
+                        PhosphorIcons.calendar(),
+                        color: Colors.white,
+                        size: 22,
+                      ),
                     ),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: 16),
+                    Text(
+                      'This Month',
+                      style: TextStyle(
+                        color: Colors.white.withOpacity(0.9),
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
                     Text(
                       '\$${thisMonthTotal.toStringAsFixed(2)}',
-                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                      style: const TextStyle(
                         fontWeight: FontWeight.bold,
-                        color: Colors.blue,
+                        color: Colors.white,
+                        fontSize: 24,
                       ),
                     ),
                   ],
@@ -520,20 +613,52 @@ class _ExpensesPageState extends State<ExpensesPage>
   }
 
   Widget _buildCategoryChart(Map<String, double> categoryTotals, double total) {
-    return Card(
+    return Container(
       margin: const EdgeInsets.only(bottom: 16),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [Colors.white, Colors.grey.shade50],
+        ),
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 15,
+            offset: const Offset(0, 5),
+          ),
+        ],
+      ),
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              'Spending by Category',
-              style: Theme.of(
-                context,
-              ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+            Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).primaryColor.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Icon(
+                    PhosphorIcons.chartPie(),
+                    color: Theme.of(context).primaryColor,
+                    size: 22,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Text(
+                  'Spending by Category',
+                  style: Theme.of(
+                    context,
+                  ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+                ),
+              ],
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 20),
             SizedBox(
               height: 200,
               child: Row(
@@ -663,14 +788,36 @@ class _ExpensesPageState extends State<ExpensesPage>
     final percentage = (amount / total * 100);
     final categoryIcon = _getCategoryIcon(category);
 
-    return Card(
-      margin: const EdgeInsets.only(bottom: 8),
+    return Container(
+      margin: const EdgeInsets.only(bottom: 12),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: categoryIcon.color.withOpacity(0.1),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Row(
           children: [
-            CircleAvatar(
-              backgroundColor: categoryIcon.color.withOpacity(0.1),
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    categoryIcon.color.withOpacity(0.2),
+                    categoryIcon.color.withOpacity(0.1),
+                  ],
+                ),
+                borderRadius: BorderRadius.circular(14),
+              ),
               child: Icon(categoryIcon.icon, color: categoryIcon.color),
             ),
             const SizedBox(width: 16),
@@ -680,14 +827,21 @@ class _ExpensesPageState extends State<ExpensesPage>
                 children: [
                   Text(
                     category,
-                    style: const TextStyle(fontWeight: FontWeight.w500),
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w600,
+                      fontSize: 15,
+                    ),
                   ),
-                  const SizedBox(height: 4),
-                  LinearProgressIndicator(
-                    value: percentage / 100,
-                    backgroundColor: Colors.grey[200],
-                    valueColor: AlwaysStoppedAnimation<Color>(
-                      categoryIcon.color,
+                  const SizedBox(height: 8),
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(4),
+                    child: LinearProgressIndicator(
+                      value: percentage / 100,
+                      backgroundColor: Colors.grey[200],
+                      valueColor: AlwaysStoppedAnimation<Color>(
+                        categoryIcon.color,
+                      ),
+                      minHeight: 6,
                     ),
                   ),
                 ],
@@ -699,14 +853,30 @@ class _ExpensesPageState extends State<ExpensesPage>
               children: [
                 Text(
                   '\$${amount.toStringAsFixed(2)}',
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontWeight: FontWeight.bold,
-                    fontSize: 16,
+                    fontSize: 17,
+                    color: categoryIcon.color,
                   ),
                 ),
-                Text(
-                  '${percentage.toStringAsFixed(1)}%',
-                  style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+                const SizedBox(height: 2),
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 2,
+                  ),
+                  decoration: BoxDecoration(
+                    color: categoryIcon.color.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Text(
+                    '${percentage.toStringAsFixed(1)}%',
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                      color: categoryIcon.color,
+                    ),
+                  ),
                 ),
               ],
             ),
@@ -720,59 +890,145 @@ class _ExpensesPageState extends State<ExpensesPage>
     final categoryIcon = _getCategoryIcon(expense.category);
     final dateFormatter = DateFormat('MMM dd');
 
-    return Card(
-      margin: const EdgeInsets.only(bottom: 8),
-      child: ListTile(
-        leading: CircleAvatar(
-          backgroundColor: categoryIcon.color.withOpacity(0.1),
-          child: Icon(categoryIcon.icon, color: categoryIcon.color, size: 20),
-        ),
-        title: Text(
-          expense.title,
-          style: const TextStyle(fontWeight: FontWeight.w500),
-        ),
-        subtitle: Row(
-          children: [
-            Text(expense.category),
-            const Text(' • '),
-            Text(dateFormatter.format(expense.date)),
-            if (expense.description != null &&
-                expense.description!.isNotEmpty) ...[
-              const Text(' • '),
-              Expanded(
-                child: Text(
-                  expense.description!,
-                  overflow: TextOverflow.ellipsis,
+    return Container(
+      margin: const EdgeInsets.only(bottom: 12),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Material(
+        color: Colors.transparent,
+        borderRadius: BorderRadius.circular(16),
+        child: InkWell(
+          borderRadius: BorderRadius.circular(16),
+          onTap: () => _showExpenseDetailsDialog(context, expense),
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [
+                        categoryIcon.color.withOpacity(0.2),
+                        categoryIcon.color.withOpacity(0.1),
+                      ],
+                    ),
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                  child: Icon(
+                    categoryIcon.icon,
+                    color: categoryIcon.color,
+                    size: 22,
+                  ),
                 ),
-              ),
-            ],
-          ],
-        ),
-        trailing: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            Text(
-              '\$${expense.amount.toStringAsFixed(2)}',
-              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        expense.title,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 15,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Row(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 8,
+                              vertical: 2,
+                            ),
+                            decoration: BoxDecoration(
+                              color: categoryIcon.color.withOpacity(0.1),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Text(
+                              expense.category,
+                              style: TextStyle(
+                                fontSize: 11,
+                                color: categoryIcon.color,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          Icon(
+                            PhosphorIcons.calendar(),
+                            size: 12,
+                            color: Colors.grey[500],
+                          ),
+                          const SizedBox(width: 4),
+                          Text(
+                            dateFormatter.format(expense.date),
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: Colors.grey[600],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Text(
+                      '\$${expense.amount.toStringAsFixed(2)}',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 17,
+                        color: categoryIcon.color,
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    BlocBuilder<MyTripsBloc, MyTripsState>(
+                      builder: (context, tripsState) {
+                        final trips = tripsState.trips.where(
+                          (t) => t.id == expense.tripId,
+                        );
+                        final tripName = trips.isNotEmpty
+                            ? trips.first.tripName
+                            : 'Unknown Trip';
+                        return Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 6,
+                            vertical: 2,
+                          ),
+                          decoration: BoxDecoration(
+                            color: Colors.grey[100],
+                            borderRadius: BorderRadius.circular(6),
+                          ),
+                          child: Text(
+                            tripName,
+                            style: TextStyle(
+                              fontSize: 10,
+                              color: Colors.grey[600],
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ],
+                ),
+              ],
             ),
-            BlocBuilder<MyTripsBloc, MyTripsState>(
-              builder: (context, tripsState) {
-                final trips = tripsState.trips.where(
-                  (t) => t.id == expense.tripId,
-                );
-                final tripName = trips.isNotEmpty
-                    ? trips.first.tripName
-                    : 'Unknown Trip';
-                return Text(
-                  tripName,
-                  style: TextStyle(fontSize: 10, color: Colors.grey[600]),
-                );
-              },
-            ),
-          ],
+          ),
         ),
-        onTap: () => _showExpenseDetailsDialog(context, expense),
       ),
     );
   }
@@ -809,24 +1065,71 @@ class _ExpensesPageState extends State<ExpensesPage>
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(PhosphorIcons.receipt(), size: 64, color: Colors.grey),
-          const SizedBox(height: 16),
+          Container(
+            padding: const EdgeInsets.all(32),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  Theme.of(context).primaryColor.withOpacity(0.1),
+                  Theme.of(context).primaryColor.withOpacity(0.05),
+                ],
+              ),
+              shape: BoxShape.circle,
+            ),
+            child: Icon(
+              PhosphorIcons.receipt(),
+              size: 64,
+              color: Theme.of(context).primaryColor.withOpacity(0.7),
+            ),
+          ),
+          const SizedBox(height: 24),
           Text(
             'No Expenses Yet',
-            style: Theme.of(context).textTheme.headlineSmall,
+            style: Theme.of(
+              context,
+            ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 8),
           Text(
             'Start tracking your expenses across all trips',
             style: Theme.of(
               context,
-            ).textTheme.bodyMedium?.copyWith(color: Colors.grey),
+            ).textTheme.bodyMedium?.copyWith(color: Colors.grey[600]),
           ),
-          const SizedBox(height: 24),
-          ElevatedButton.icon(
-            onPressed: () => _showAddExpenseBottomSheet(context),
-            icon: Icon(PhosphorIcons.plus()),
-            label: const Text('Add First Expense'),
+          const SizedBox(height: 32),
+          Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  Theme.of(context).primaryColor,
+                  Theme.of(context).primaryColor.withOpacity(0.8),
+                ],
+              ),
+              borderRadius: BorderRadius.circular(16),
+              boxShadow: [
+                BoxShadow(
+                  color: Theme.of(context).primaryColor.withOpacity(0.3),
+                  blurRadius: 12,
+                  offset: const Offset(0, 6),
+                ),
+              ],
+            ),
+            child: ElevatedButton.icon(
+              onPressed: () => _showAddExpenseBottomSheet(context),
+              icon: Icon(PhosphorIcons.plus()),
+              label: const Text('Add First Expense'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.transparent,
+                foregroundColor: Colors.white,
+                shadowColor: Colors.transparent,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 24,
+                  vertical: 14,
+                ),
+              ),
+            ),
           ),
         ],
       ),

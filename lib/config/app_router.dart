@@ -1,12 +1,19 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import '../blocs/authentication/authentication_bloc.dart';
 import '../blocs/authentication/authentication_state.dart';
+import '../blocs/itinerary/itinerary_bloc.dart';
+import '../blocs/expense/expense_bloc.dart';
+import '../blocs/stay/stay_bloc.dart';
+import '../blocs/mytrips/mytrips_bloc.dart';
+import '../models/trip.dart';
 import '../pages/login_page.dart';
 import '../pages/main_navigation_page.dart';
 import '../pages/splash_page.dart';
 import '../pages/profile_page.dart';
+import '../pages/trip_detail_page.dart';
 import 'app_routes.dart';
 
 class AppRouter {
@@ -58,6 +65,37 @@ class AppRouter {
           path: AppRoutes.profile,
           name: AppRoutes.profileName,
           builder: (context, state) => const ProfilePage(),
+        ),
+        GoRoute(
+          path: '/trip/:tripId',
+          name: AppRoutes.tripDetailName,
+          builder: (context, state) {
+            final tripId = state.pathParameters['tripId']!;
+            // Get the trip from MyTripsBloc
+            final myTripsState = context.read<MyTripsBloc>().state;
+            final trip = myTripsState.trips.firstWhere(
+              (t) => t.id == tripId,
+              orElse: () => Trip(
+                id: tripId,
+                tripName: 'Loading...',
+                destination: '',
+                startDate: DateTime.now(),
+                endDate: DateTime.now(),
+                budget: 0,
+                userId: '',
+                createdAt: DateTime.now(),
+                updatedAt: DateTime.now(),
+              ),
+            );
+            return MultiBlocProvider(
+              providers: [
+                BlocProvider(create: (_) => ItineraryBloc()),
+                BlocProvider(create: (_) => ExpenseBloc()),
+                BlocProvider(create: (_) => StayBloc()),
+              ],
+              child: TripDetailPage(trip: trip),
+            );
+          },
         ),
       ],
     );

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:go_router/go_router.dart';
 import 'dart:math' as math;
 import '../blocs/authentication/authentication_bloc.dart';
 import '../blocs/authentication/authentication_event.dart';
@@ -10,7 +11,6 @@ import '../blocs/mytrips/mytrips_state.dart';
 import '../blocs/expense/expense_bloc.dart';
 import '../blocs/expense/expense_event.dart';
 import '../blocs/expense/expense_state.dart';
-import '../pages/expenses_page.dart';
 
 class MyTripsPage extends StatefulWidget {
   const MyTripsPage({super.key});
@@ -64,29 +64,8 @@ class _MyTripsPageState extends State<MyTripsPage>
     );
   }
 
-  void _navigateToExpenses(BuildContext context, String tripId) {
-    Navigator.of(context).push(
-      PageRouteBuilder(
-        pageBuilder: (context, animation, secondaryAnimation) =>
-            const ExpensesPage(),
-        transitionsBuilder: (context, animation, secondaryAnimation, child) {
-          return SlideTransition(
-            position:
-                Tween<Offset>(
-                  begin: const Offset(1.0, 0.0),
-                  end: Offset.zero,
-                ).animate(
-                  CurvedAnimation(
-                    parent: animation,
-                    curve: Curves.easeOutCubic,
-                  ),
-                ),
-            child: child,
-          );
-        },
-        transitionDuration: const Duration(milliseconds: 300),
-      ),
-    );
+  void _navigateToTripDetail(BuildContext context, String tripId) {
+    context.push('/trip/$tripId');
   }
 
   @override
@@ -401,7 +380,7 @@ class _MyTripsPageState extends State<MyTripsPage>
               return AnimatedTripCard(
                 trip: trip,
                 index: index,
-                onTap: () => _navigateToExpenses(context, trip.id),
+                onTap: () => _navigateToTripDetail(context, trip.id),
               );
             },
           ),

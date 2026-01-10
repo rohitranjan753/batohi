@@ -6,10 +6,12 @@ class AppRoutes {
   static const String login = '/login';
   static const String home = '/home';
   static const String profile = '/profile';
+  static const String tripDetail = '/trip/:tripId';
 
   // Route names (optional, can be used for named navigation)
   static const String splashName = 'splash';
   static const String loginName = 'login';
   static const String homeName = 'home';
   static const String profileName = 'profile';
+  static const String tripDetailName = 'tripDetail';
 }
